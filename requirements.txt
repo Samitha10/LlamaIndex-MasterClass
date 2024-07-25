@@ -1,2 +1,5 @@
 llama-index-core
 llama-index
+llama-index-llms-groq
+llama-index-readers-web
+llama-index-embeddings-voyageai
