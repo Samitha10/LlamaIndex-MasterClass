@@ -19,12 +19,32 @@ Settings.embed_model = embed_model
 reader = SimpleDirectoryReader(input_files=["Sri Lanka.pdf"])
 docs = reader.load_data()
 print(f"Loaded {len(docs)} docs")
-print(docs[0])
+# print(docs[0])
 
 # This index is created local memory
 index = VectorStoreIndex.from_documents(docs)
 
 # Simple Query engine for created vector store index
 query_engine = index.as_query_engine(llm=llm)
+response = query_engine.query("What is the capital of Sri Lanka?")
+print(response)
+
+
+# ----------------- More advanced example -----------------
+from llama_index.core.retrievers import VectorIndexRetriever
+from llama_index.core.query_engine import RetrieverQueryEngine
+from llama_index.core.response_synthesizers import get_response_synthesizer
+
+retriver = VectorIndexRetriever(
+    index=index, similarity_top_k=2, query_embedding=embed_model
+)
+synthesizer = get_response_synthesizer(
+    response_mode="compact",
+    llm=llm,
+)
+query_engine = RetrieverQueryEngine(
+    retriever=retriver, response_synthesizer=synthesizer
+)
+
 response = query_engine.query("What is the capital of Sri Lanka?")
 print(response)
